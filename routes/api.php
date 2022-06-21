@@ -16,4 +16,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function () {
     Route::apiResource('address', \App\Http\Controllers\AddressController::class);
+    Route::get('test', [\App\Http\Controllers\AddressController::class, 'searchAddressFromExternalApi']);
 });

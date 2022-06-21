@@ -3,13 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\AddressRequest;
+use App\Http\Resources\AddressResource;
 use App\Models\Address;
+use App\Traits\FetchAddressTrait;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AddressController extends Controller
 {
+    use FetchAddressTrait;
+
     /**
      * Display a listing of the resource.
      *
@@ -17,7 +20,7 @@ class AddressController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json(Address::all(), Response::HTTP_OK);
+        return response()->json(AddressResource::collection(Address::all()), Response::HTTP_OK);
     }
 
     /**
@@ -39,7 +42,7 @@ class AddressController extends Controller
      */
     public function show(Address $address): JsonResponse
     {
-        return response()->json($address, Response::HTTP_OK);
+        return response()->json(new AddressResource($address), Response::HTTP_OK);
     }
 
     /**
@@ -65,5 +68,12 @@ class AddressController extends Controller
         $address->delete();
 
         return response()->json([], Response::HTTP_NO_CONTENT);
+    }
+
+    public function searchAddressFromExternalApi()
+    {
+        $data = $this->getAddress(89218112);
+
+        return response()->json(new AddressResource($data), 200);
     }
 }
